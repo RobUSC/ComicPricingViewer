@@ -2,9 +2,9 @@ import * as mongodb from "mongodb";
 
 export interface item {
   _id?: mongodb.ObjectId;
-  Publisher: string;
-  'Series Title': string;
-  'Issue  Number': string;
+  publisher: string;
+  series_title: string;
+  issue_number: string;
   graded: string;
   'Professional Grader': string,
   Grade: string;

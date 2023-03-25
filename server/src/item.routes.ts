@@ -5,13 +5,12 @@ import {collections} from "./database";
 export const itemRouter = express.Router();
 itemRouter.use(express.json());
 
+
 itemRouter.get("/", async (_req, res) => {
   try {
-    // @ts-ignore
-    const comics = await collections.comics.find({}).toArray();
-    res.status(200).send(comics);
+    const items = await collections.items.find(_req.query, _req.query).toArray();
+    res.status(200).send(items);
   } catch (error) {
-    // @ts-ignore
     res.status(500).send(error.message);
   }
 });
@@ -21,11 +20,10 @@ itemRouter.get("/:id", async (req, res) => {
   try {
     const id = req?.params?.id;
     const query = {_id: new mongodb.ObjectId(id)};
-    // @ts-ignore
-    const comic = await collections.comics.findOne(query);
+    const item = await collections.items.findOne(query);
 
-    if (comic) {
-      res.status(200).send(comic);
+    if (item) {
+      res.status(200).send(item);
     } else {
       res.status(404).send(`Failed to find an item: ID ${id}`);
     }
@@ -35,12 +33,10 @@ itemRouter.get("/:id", async (req, res) => {
   }
 });
 
-
 itemRouter.post("/", async (req, res) => {
   try {
     const item = req.body;
-    // @ts-ignore
-    const result = await collections.comics.insertOne(item);
+    const result = await collections.items.insertOne(item);
 
     if (result.acknowledged) {
       res.status(201).send(`Created a new item: ID ${result.insertedId}.`);
@@ -49,7 +45,6 @@ itemRouter.post("/", async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    // @ts-ignore
     res.status(400).send(error.message);
   }
 });
@@ -60,8 +55,7 @@ itemRouter.put("/:id", async (req, res) => {
     const id = req?.params?.id;
     const item = req.body;
     const query = {_id: new mongodb.ObjectId(id)};
-    // @ts-ignore
-    const result = await collections.comics.updateOne(query, {$set: item});
+    const result = await collections.items.updateOne(query, {$set: item});
 
     if (result && result.matchedCount) {
       res.status(200).send(`Updated an item: ID ${id}.`);
@@ -82,8 +76,7 @@ itemRouter.delete("/:id", async (req, res) => {
   try {
     const id = req?.params?.id;
     const query = {_id: new mongodb.ObjectId(id)};
-    // @ts-ignore
-    const result = await collections.comics.deleteOne(query);
+    const result = await collections.items.deleteOne(query);
 
     if (result && result.deletedCount) {
       res.status(202).send(`Removed a item: ID ${id}`);

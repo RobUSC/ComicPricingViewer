@@ -2,37 +2,37 @@ import * as mongodb from "mongodb";
 import {item} from "./item";
 
 export const collections: {
-  comics?: mongodb.Collection<item>;
+  items?: mongodb.Collection<item>;
 } = {};
 
 export async function connectToDatabase(uri: string) {
   const client = new mongodb.MongoClient(uri);
   await client.connect();
 
-  const db = client.db("meanStackExample");
+  const db = client.db("EbayPricer");
   await applySchemaValidation(db);
 
   const itemCollection = db.collection<item>("items");
-  collections.comics = itemCollection;
+  collections.items = itemCollection;
 }
 
 async function applySchemaValidation(db: mongodb.Db) {
   const jsonSchema = {
     $jsonSchema: {
       bsonType: "object",
-      required: ["_id", "Publisher", "Series Title", 'Issue Number'],
+      required: ["_id", "publisher", "series_title", 'issue_number'],
       additionalProperties: true,
       properties: {
         _id: {},
-        Publisher: {
+        publisher: {
           bsonType: "string",
           description: "'Publisher' is required and is a string",
         },
-        'Series Title': {
+        series_title: {
           bsonType: "string",
           description: "'Series Title' is required and is a string",
         },
-        'Issue Number': {
+        issue_number: {
           bsonType: "string",
           description: "'Issue Number' is required and is a string",
         },
@@ -41,11 +41,11 @@ async function applySchemaValidation(db: mongodb.Db) {
   };
 
   await db.command({
-    collMod: "comics",
+    collMod: "items",
     validator: jsonSchema
   }).catch(async (error: mongodb.MongoServerError) => {
     if (error.codeName === 'NamespaceNotFound') {
-      await db.createCollection("comics", {validator: jsonSchema});
+      await db.createCollection("items", {validator: jsonSchema});
     }
   });
 }

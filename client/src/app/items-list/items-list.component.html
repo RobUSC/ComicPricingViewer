@@ -1,0 +1,69 @@
+<div class="card m-3">
+  <h3 class="card-header text-center">Items List</h3>
+  <div class="card-body">
+    <table class="table table-striped table-sm">
+      <thead>
+      <tr>
+        <th><a (click)="sortBy('publisher')">Publisher {{sortIcon('publisher')}}</a></th>
+        <th><a (click)="sortBy('series_title')">Series Title {{sortIcon('series_title')}}</a></th>
+        <th><a (click)="sortBy('issue_number')">Issue Number {{sortIcon('issue_number')}}</a></th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          <form>
+            <input [formControl]="publisher"
+                   type="text"
+                   id="publisher_filter"
+                   (blur)='onBlur()'
+                   name="publisher_filter"
+                   placeholder="Publisher"
+                   class="form-control ng-untouched ng-pristine ng-valid">
+          </form>
+        </td>
+        <td>
+          <form>
+            <input [formControl]="series_title"
+                   type="text"
+                   id="series_title"
+                   (blur)='onBlur()'
+                   name="series_title"
+                   placeholder="Series Title"
+                   class="form-control ng-untouched ng-pristine ng-valid">
+          </form>
+        </td>
+        <td>
+          <form>
+            <input [formControl]="issue_number"
+                   type="text"
+                   id="issue_number"
+                   (blur)='onBlur()'
+                   name="issue_number"
+                   placeholder="Issue Number"
+                   class="form-control ng-untouched ng-pristine ng-valid">
+          </form>
+        </td>
+      </tr>
+      <tr *ngFor="let item of itemsS">
+        <td>{{item.publisher}}</td>
+        <td>{{item.series_title}}</td>
+        <td>{{item.issue_number}}</td>
+        <td>
+          <button class="btn btn-primary me-1" [routerLink]="['edit/', item._id]">Edit</button>
+          <button class="btn btn-danger" (click)="deleteItem(item._id || '')">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="loading">
+        <td colspan="5" class="text-center py-5">
+          <span class="spinner-border spinner-border-lg align-center"></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer pb-0 pt-3">
+    <pagination [items]="itemsS" (changePage)="onChangePage($event)"></pagination>
+  </div>
+</div>
