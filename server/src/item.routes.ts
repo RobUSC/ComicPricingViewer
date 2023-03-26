@@ -5,10 +5,9 @@ import {collections} from "./database";
 export const itemRouter = express.Router();
 itemRouter.use(express.json());
 
-
 itemRouter.get("/", async (_req, res) => {
   try {
-    const items = await collections.items.find(_req.query, _req.query).toArray();
+    const items = await collections.items.find(_req.query).toArray();
     res.status(200).send(items);
   } catch (error) {
     res.status(500).send(error.message);

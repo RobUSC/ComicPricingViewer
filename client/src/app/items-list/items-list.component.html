@@ -4,6 +4,7 @@
     <table class="table table-striped table-sm">
       <thead>
       <tr>
+        <th><a (click)="sortBy('_id')">Id {{sortIcon('_id')}}</a></th>
         <th><a (click)="sortBy('publisher')">Publisher {{sortIcon('publisher')}}</a></th>
         <th><a (click)="sortBy('series_title')">Series Title {{sortIcon('series_title')}}</a></th>
         <th><a (click)="sortBy('issue_number')">Issue Number {{sortIcon('issue_number')}}</a></th>
@@ -12,6 +13,8 @@
       </thead>
       <tbody>
       <tr>
+        <td>
+        </td>
         <td>
           <form>
             <input [formControl]="publisher"
@@ -45,16 +48,37 @@
                    class="form-control ng-untouched ng-pristine ng-valid">
           </form>
         </td>
+        <td></td>
       </tr>
-      <tr *ngFor="let item of itemsS">
-        <td>{{item.publisher}}</td>
-        <td>{{item.series_title}}</td>
-        <td>{{item.issue_number}}</td>
-        <td>
-          <button class="btn btn-primary me-1" [routerLink]="['edit/', item._id]">Edit</button>
-          <button class="btn btn-danger" (click)="deleteItem(item._id || '')">Delete</button>
-        </td>
-      </tr>
+      <ng-template ngFor let-item [ngForOf]="items" let-i="index" class="row container-fluid">
+        <tr style="width: 100%" >
+          <td (click)="item.isShown=!item.isShown">{{item._id}}</td>
+          <td>{{item.publisher}}</td>
+          <td>{{item.series_title}}</td>
+          <td>{{item.issue_number}}</td>
+          <td>
+            <button class="btn btn-primary me-1" [routerLink]="['edit/', item._id]">Edit</button>
+            <button class="btn btn-danger" (click)="deleteItem(item._id || '')">Delete</button>
+          </td>
+        </tr>
+        <tr *ngIf="item.isShown && item.comps"  class="row container-fluid" style="width: 1200px" aria-colspan="5" >
+          <table>
+            <tr>
+              <td></td>
+              <td>Match Title</td>
+              <td>Match Price</td>
+            </tr>
+            <tr *ngFor="let match of item.comps?.ebay_matches">
+              <td><a href="{{ match.url}}" target="_blank">
+                <img src="{{ match.galleryUrl}}" height="100" width="100">
+              </a>
+              </td>
+              <td>{{ match.title}}</td>
+              <td>{{formatNumber(match.price)}}</td>
+            </tr>
+          </table>
+        </tr>
+      </ng-template>
       <tr *ngIf="loading">
         <td colspan="5" class="text-center py-5">
           <span class="spinner-border spinner-border-lg align-center"></span>
@@ -64,6 +88,6 @@
     </table>
   </div>
   <div class="card-footer pb-0 pt-3">
-    <pagination [items]="itemsS" (changePage)="onChangePage($event)"></pagination>
+    <pagination [items]="items" (changePage)="onChangePage($event)"></pagination>
   </div>
 </div>
