@@ -63,18 +63,18 @@
         </tr>
         <tr *ngIf="item.isShown && item.comps"  class="row container-fluid" style="width: 1200px" aria-colspan="5" >
           <table>
-            <tr>
+            <tr class="altRow">
               <td></td>
               <td>Match Title</td>
               <td>Match Price</td>
             </tr>
-            <tr *ngFor="let match of item.comps?.ebay_matches">
-              <td><a href="{{ match.url}}" target="_blank">
+            <tr *ngFor="let match of item.comps?.ebay_matches" class="altRow">
+              <td style="text-align: center"><a href="{{ match.url}}" target="_blank">
                 <img src="{{ match.galleryUrl}}" height="100" width="100">
               </a>
               </td>
               <td>{{ match.title}}</td>
-              <td>{{formatNumber(match.price)}}</td>
+              <td style="text-align: right">{{formatNumber(match.price)}}</td>
             </tr>
           </table>
         </tr>
